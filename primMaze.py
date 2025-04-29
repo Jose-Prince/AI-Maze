@@ -76,6 +76,8 @@ def display_maze():
                 line += "|"
         print(line)
 
+treeEdges = []
+
 # Algoritmo de Prim
 mark(random.randint(0, width - 1), random.randint(0, height - 1))
 while frontier:
@@ -88,6 +90,9 @@ while frontier:
     grid[y][x] |= dir
     if dir != None:
         grid[ny][nx] |= OPPOSITE[dir]
+
+    treeEdges.append(((x, y), (nx, ny)))
+
     mark(x, y)
     display_maze()
     time.sleep(0.01)

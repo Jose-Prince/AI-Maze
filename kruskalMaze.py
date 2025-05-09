@@ -1,0 +1,76 @@
+import time
+import random
+import minTree
+
+width = 20
+height = 20
+seed = 123457
+delay = 0.001
+
+random.seed(seed)
+
+N, S, E, W = 1, 2, 4, 8
+DX = {E: 1, W: -1, N: 0, S:0}
+DY = {E: 0, W: 0, N: -1, S: 1}
+OPPOSITE = {E: W, W:E, N:S, S:N}
+
+mst = minTree.MinimunSpanningTree()
+
+grid = [[0 for _ in range(width)] for _ in range(height)]
+edges = []
+
+parent = {}
+rank = {}
+
+for y in range(height):
+    for x in range(width):
+        mst.make_set((x, y))
+        if y > 0: edges.append((x, y, N))
+        if x > 0: edges.append((x, y, W))
+
+random.shuffle(edges)
+
+def display_maze(grid, start=None, end=None):
+    print("\033[H", end="")
+    print(" " + "_" * (2 * width - 1))
+    for y, row in enumerate(grid):
+        print("|", end="")
+        for x, cell in enumerate(row):
+            current = (x, y)
+
+            if current == start:
+                print("\033[42m", end="")
+            elif current == end:
+                print("\033[41m", end="")
+            elif cell == 0:
+                print("\033[47m", end="")
+
+            print(" " if (cell & S) else "_", end="")
+
+            if cell & E:
+                neighbor = row[x + 1] if x + 1 < width else 0
+                print(" " if ((cell | neighbor) & S) else "_", end="")
+            else:
+                print("|", end="")
+
+            if current in [start, end] or cell == 0:
+                print("\033[m", end="")
+        print()
+
+print('\033[2J', end="")
+
+while edges:
+    x, y, direction = edges.pop()
+    nx, ny = x + DX[direction], y + DY[direction]
+
+    if not mst.connected((x, y), (nx, ny)):
+        display_maze(grid)
+        time.sleep(delay)
+
+        mst.union((x, y), (nx, ny))
+        grid[y][x] |= direction
+        grid[ny][nx] |= OPPOSITE[direction]
+
+        mst.add_edge((x, y), (nx, ny))
+
+display_maze(grid, start=mst.start, end=mst.end)

@@ -2,35 +2,12 @@ import time
 import random
 import minTree
 
-width = 20
-height = 20
-seed = 123457
-delay = 0.001
-
-random.seed(seed)
-
 N, S, E, W = 1, 2, 4, 8
 DX = {E: 1, W: -1, N: 0, S:0}
 DY = {E: 0, W: 0, N: -1, S: 1}
 OPPOSITE = {E: W, W:E, N:S, S:N}
 
-mst = minTree.MinimunSpanningTree()
-
-grid = [[0 for _ in range(width)] for _ in range(height)]
-edges = []
-
-parent = {}
-rank = {}
-
-for y in range(height):
-    for x in range(width):
-        mst.make_set((x, y))
-        if y > 0: edges.append((x, y, N))
-        if x > 0: edges.append((x, y, W))
-
-random.shuffle(edges)
-
-def display_maze(grid, start=None, end=None):
+def display_maze(width, grid, start=None, end=None):
     print("\033[H", end="")
     print(" " + "_" * (2 * width - 1))
     for y, row in enumerate(grid):
@@ -57,20 +34,45 @@ def display_maze(grid, start=None, end=None):
                 print("\033[m", end="")
         print()
 
-print('\033[2J', end="")
+def executeKruskalAlgorithm():
+    width = 20
+    height = 20
+    
+    seed = random.randint(0, 0xFFFF_FFFF)
+    random.seed(seed)
 
-while edges:
-    x, y, direction = edges.pop()
-    nx, ny = x + DX[direction], y + DY[direction]
 
-    if not mst.connected((x, y), (nx, ny)):
-        display_maze(grid)
-        time.sleep(delay)
+    mst = minTree.MinimunSpanningTree()
 
-        mst.union((x, y), (nx, ny))
-        grid[y][x] |= direction
-        grid[ny][nx] |= OPPOSITE[direction]
+    grid = [[0 for _ in range(width)] for _ in range(height)]
+    edges = []
 
-        mst.add_edge((x, y), (nx, ny))
+    for y in range(height):
+        for x in range(width):
+            mst.make_set((x, y))
+            if y > 0: edges.append((x, y, N))
+            if x > 0: edges.append((x, y, W))
 
-display_maze(grid, start=mst.start, end=mst.end)
+    random.shuffle(edges)
+
+    print('\033[2J', end="")
+
+    while edges:
+        x, y, direction = edges.pop()
+        nx, ny = x + DX[direction], y + DY[direction]
+
+        if not mst.connected((x, y), (nx, ny)):
+            display_maze(width, grid)
+            time.sleep(0.001)
+
+            mst.union((x, y), (nx, ny))
+            grid[y][x] |= direction
+            grid[ny][nx] |= OPPOSITE[direction]
+    
+            mst.add_edge((x, y), (nx, ny))
+
+    display_maze(width, grid, start=mst.start, end=mst.end)
+
+    return mst
+
+#executeKruskalAlgorithm()

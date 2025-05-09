@@ -1,6 +1,7 @@
 import random
 import time
 import os
+import minTree
 
 # Parámetros
 width = 20
@@ -18,6 +19,8 @@ OPPOSITE = { E: W, W: E, N: S, S: N }
 grid = [[0 for _ in range(width)] for _ in range(height)]
 frontier = []
 
+mst = minTree.MinimunSpanningTree()
+
 def add_frontier(x, y):
     if 0 <= x < width and 0 <= y < height and grid[y][x] == 0:
         grid[y][x] |= FRONTIER
@@ -25,6 +28,7 @@ def add_frontier(x, y):
 
 def mark(x, y):
     grid[y][x] |= IN
+    mst.make_set((x, y))
     add_frontier(x - 1, y)
     add_frontier(x + 1, y)
     add_frontier(x, y - 1)
@@ -58,10 +62,17 @@ def display_maze():
         line = "|"
         for x in range(width):
             cell = grid[y][x]
-            if empty(cell) and y + 1 < height and empty(grid[y + 1][x]):
+            cord = (x, y)
+
+            if cord == mst.start:
+                line += "\033[42m"
+            elif cord == mst.end:
+                line += "\033[41m"
+            elif empty(cell) and y + 1 < height and empty(grid[y + 1][x]):
                 line += " "
             else:
                 line += " " if cell & S != 0 else "_"
+
             if empty(cell) and x + 1 < width and empty(grid[y][x + 1]):
                 if y + 1 < height and (empty(grid[y + 1][x]) or empty(grid[y + 1][x + 1])):
                     line += " "
@@ -74,12 +85,13 @@ def display_maze():
                     line += "_"
             else:
                 line += "|"
+
+            if cord == mst.start or cord == mst.end:
+                line += "\033[m"
         print(line)
 
-treeEdges = []
-
-# Algoritmo de Prim
 mark(random.randint(0, width - 1), random.randint(0, height - 1))
+
 while frontier:
     x, y = frontier.pop(random.randint(0, len(frontier) - 1))
     n = neighbors(x, y)
@@ -87,17 +99,15 @@ while frontier:
         continue
     nx, ny = n[random.randint(0, len(n) - 1)]
     dir = direction(x, y, nx, ny)
-    grid[y][x] |= dir
-    if dir != None:
+    if dir is not None:
+        grid[y][x] |= dir
         grid[ny][nx] |= OPPOSITE[dir]
 
-    treeEdges.append(((x, y), (nx, ny)))
-
     mark(x, y)
+    mst.add_edge((x, y), (nx, ny))
+    mst.union((x, y), (nx, ny))
+
     display_maze()
     time.sleep(0.01)
 
-# Mostrar laberinto final y semilla
 display_maze()
-print(f"python prim_maze.py {width} {height} {seed}")
-

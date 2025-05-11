@@ -43,7 +43,10 @@ def direction(fx, fy, tx, ty):
 def empty(cell):
     return cell == 0 or cell == FRONTIER
 
-def display_maze(width, height, grid, mst):
+def display_maze(width, height, grid, mst, visited=None, path=None):
+    visited = visited or set()
+    path = path or []
+
     os.system("cls" if os.name == "nt" else "clear")
     print(" " + "_" * (width * 2 - 1))
     for y in range(height):
@@ -52,11 +55,16 @@ def display_maze(width, height, grid, mst):
             cell = grid[y][x]
             cord = (x, y)
 
-            if cord == mst.start:
-                line += "\033[42m"
+            if cord in path:
+                line += "\033[43m"  # Yellow for path
+            elif cord in visited:
+                line += "\033[44m"  # Blue for visited
+            elif cord == mst.start:
+                line += "\033[42m"  # Green start
             elif cord == mst.end:
-                line += "\033[41m"
-            elif empty(cell) and y + 1 < height and empty(grid[y + 1][x]):
+                line += "\033[41m"  # Red end
+
+            if empty(cell) and y + 1 < height and empty(grid[y + 1][x]):
                 line += " "
             else:
                 line += " " if cell & S != 0 else "_"
@@ -74,13 +82,13 @@ def display_maze(width, height, grid, mst):
             else:
                 line += "|"
 
-            if cord == mst.start or cord == mst.end:
+            if cord in visited or cord in path or cord == mst.start or cord == mst.end:
                 line += "\033[m"
         print(line)
 
-def executePrimAlgorithm(width=20, height=20):
-    width = 20
-    height = 20
+
+def executePrimAlgorithm(width, height):
+    debug = 0
     seed = random.randint(0, 0xFFFF_FFFF)
     random.seed(seed)
 
@@ -92,6 +100,7 @@ def executePrimAlgorithm(width=20, height=20):
     mark(random.randint(0, width - 1), random.randint(0, height - 1), width, height, grid, frontier, mst)
 
     while frontier:
+        debug = debug +1
         x, y = frontier.pop(random.randint(0, len(frontier) - 1))
         n = neighbors(x, y, width, height, grid)
         if not n:
@@ -106,9 +115,14 @@ def executePrimAlgorithm(width=20, height=20):
         mst.add_edge((x, y), (nx, ny))
         mst.union((x, y), (nx, ny))
 
-        display_maze(width, height, grid, mst)
-        time.sleep(0.01)
-
+        #Habilita el debug de pasos a pasos que hace el algoritmo
+        if debug % 50 == 0:
+            display_maze(width, height, grid, mst)
+            time.sleep(0.1)
+        
     display_maze(width, height, grid, mst)
+
+    return grid, mst, width, height
+
 
 #executePrimAlgorithm()   

@@ -34,9 +34,8 @@ def display_maze(width, grid, start=None, end=None):
                 print("\033[m", end="")
         print()
 
-def executeKruskalAlgorithm():
-    width = 20
-    height = 20
+def executeKruskalAlgorithm(width, height):
+
     
     seed = random.randint(0, 0xFFFF_FFFF)
     random.seed(seed)
@@ -56,14 +55,17 @@ def executeKruskalAlgorithm():
     random.shuffle(edges)
 
     print('\033[2J', end="")
-
+    debug = 0
     while edges:
+        debug = debug + 1
         x, y, direction = edges.pop()
         nx, ny = x + DX[direction], y + DY[direction]
 
         if not mst.connected((x, y), (nx, ny)):
-            display_maze(width, grid)
-            time.sleep(0.001)
+            
+            if debug % 50 == 0:
+                display_maze(width, grid)
+                time.sleep(0.001)
 
             mst.union((x, y), (nx, ny))
             grid[y][x] |= direction
@@ -72,7 +74,6 @@ def executeKruskalAlgorithm():
             mst.add_edge((x, y), (nx, ny))
 
     display_maze(width, grid, start=mst.start, end=mst.end)
-
     return mst
 
 #executeKruskalAlgorithm()

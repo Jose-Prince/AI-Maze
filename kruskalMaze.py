@@ -74,6 +74,6 @@ def executeKruskalAlgorithm(width, height):
             mst.add_edge((x, y), (nx, ny))
 
     display_maze(width, grid, start=mst.start, end=mst.end)
-    return mst
+    return grid, mst
 
 #executeKruskalAlgorithm()

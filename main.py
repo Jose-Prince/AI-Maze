@@ -44,7 +44,8 @@ if __name__ == "__main__":
         print(f"Nodes explored: {len(visited)}")
 
     else:
-        grid, mst, width, height = kruskalMaze.executeKruskalAlgorithm(width, height)
+
+        grid, mst= kruskalMaze.executeKruskalAlgorithm(width, height)
 
         startpoint = (1, 1)
         endpoint = (width - 1, height - 1)
@@ -63,7 +64,7 @@ if __name__ == "__main__":
             print("Set default BFS")
             path, visited = bfs.bfs_solve_maze(grid, width, height, startpoint, endpoint)
         
-        kruskalMaze.display_maze(width, height, grid, mst, visited, path)
+        primMaze.display_maze(width, height, grid, mst, visited, path)
 
         print(f"\nPath length: {len(path)}")
         print(f"Nodes explored: {len(visited)}")

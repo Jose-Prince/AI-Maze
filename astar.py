@@ -1,4 +1,6 @@
 import heapq
+import time
+from primMaze import display_maze
 
 N, S, E, W = 1, 2, 4, 8
 DX = {E: 1, W: -1, N: 0, S:0}
@@ -11,7 +13,7 @@ def manhattan_distance(a, b):
     (x2, y2) = b
     return abs(x1 - x2) + abs(y1 - y2)
 
-def astar_solve_maze(grid, width, height, start, end):
+def astar_solve_maze(grid, width, height, start, end, mst, condicion):
     heap = []
     visited = set()
     parent = {}
@@ -55,7 +57,9 @@ def astar_solve_maze(grid, width, height, start, end):
         if current is None:
             print("No path found!")
             return [], visited
-
+        if condicion:
+            display_maze(width, height, grid, mst, visited, path)
+            time.sleep(0.1)
     path.append(start)
     path.reverse()
 

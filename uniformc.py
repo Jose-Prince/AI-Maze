@@ -1,12 +1,13 @@
 import heapq
-
+import time
+from primMaze import display_maze
 
 N, S, E, W = 1, 2, 4, 8
 DX = {E: 1, W: -1, N: 0, S:0}
 DY = {E: 0, W: 0, N: -1, S: 1}
 OPPOSITE = {E: W, W:E, N:S, S:N}
 
-def ucs_solve_maze(grid, width, height, start, end):
+def ucs_solve_maze(grid, width, height, start, end, mst, condicion):
     heap = []
     visited = set()
     parent = {}
@@ -50,6 +51,9 @@ def ucs_solve_maze(grid, width, height, start, end):
         if current is None:
             print("No path found!")
             return [], visited
+        if condicion:
+            display_maze(width, height, grid, mst, visited, path)
+            time.sleep(0.1)
 
     path.append(start)
     path.reverse()

@@ -20,22 +20,25 @@ if __name__ == "__main__":
     
     if option == 1:
         grid, mst, width, height = primMaze.executePrimAlgorithm(width, height)
+
+        mst.start = (0,0)
+        mst.end = (79,59)
         startpoint = mst.start
         endpoint = mst.end 
 
         algorithm = int(input("Select the algorithm:\n1: BFS \n2: DFS \n3: COST UNIFROM SEARCH \n4: A* "))
 
         if algorithm == 1:
-            path, visited = bfs.bfs_solve_maze(grid, width, height, startpoint, endpoint)
+            path, visited = bfs.bfs_solve_maze(grid, width, height, startpoint, endpoint, mst, True)
         elif algorithm == 2:
-            path, visited = dfs.dfs_solve_maze(grid, width, height, startpoint, endpoint)
+            path, visited = dfs.dfs_solve_maze(grid, width, height, startpoint, endpoint, mst, True)
         elif algorithm == 3:
-            path, visited = uniformc.ucs_solve_maze(grid, width, height, startpoint, endpoint)
+            path, visited = uniformc.ucs_solve_maze(grid, width, height, startpoint, endpoint, mst, True)
         elif algorithm == 4:
-            path, visited = astar.astar_solve_maze(grid, width, height, startpoint, endpoint)
+            path, visited = astar.astar_solve_maze(grid, width, height, startpoint, endpoint, mst, True)
         else:
             print("Set default BFS")
-            path, visited = bfs.bfs_solve_maze(grid, width, height, startpoint, endpoint)
+            path, visited = bfs.bfs_solve_maze(grid, width, height, startpoint, endpoint, True)
 
         
         primMaze.display_maze(width, height, grid, mst, visited, path)
@@ -52,7 +55,7 @@ if __name__ == "__main__":
         algorithm = int(input("Select the algorithm:\n1: BFS \n2: DFS \n3: COST UNIFROM SEARCH \n4: A* "))
 
         if algorithm == 1:
-            path, visited = bfs.bfs_solve_maze(grid, width, height, startpoint, endpoint)
+            path, visited = bfs.bfs_solve_maze(grid, width, height, startpoint, endpoint, mst)
         elif algorithm == 2:
             path, visited = dfs.dfs_solve_maze(grid, width, height, startpoint, endpoint)
         elif algorithm == 3:

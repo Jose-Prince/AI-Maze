@@ -20,8 +20,8 @@ if __name__ == "__main__":
     
     if option == 1:
         grid, mst, width, height = primMaze.executePrimAlgorithm(width, height)
-        startpoint = (1, 1)
-        endpoint = (width - 1, height - 1)
+        startpoint = mst.start
+        endpoint = mst.end 
 
         algorithm = int(input("Select the algorithm:\n1: BFS \n2: DFS \n3: COST UNIFROM SEARCH \n4: A* "))
 
@@ -46,9 +46,8 @@ if __name__ == "__main__":
     else:
 
         grid, mst= kruskalMaze.executeKruskalAlgorithm(width, height)
-
-        startpoint = (1, 1)
-        endpoint = (width - 1, height - 1)
+        startpoint = mst.start
+        endpoint = mst.end
 
         algorithm = int(input("Select the algorithm:\n1: BFS \n2: DFS \n3: COST UNIFROM SEARCH \n4: A* "))
 

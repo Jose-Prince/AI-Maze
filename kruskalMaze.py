@@ -65,7 +65,7 @@ def executeKruskalAlgorithm(width, height):
             
             if debug % 50 == 0:
                 display_maze(width, grid)
-                time.sleep(0.001)
+                time.sleep(0.1)
 
             mst.union((x, y), (nx, ny))
             grid[y][x] |= direction
